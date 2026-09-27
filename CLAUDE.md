@@ -1,11 +1,9 @@
-# Your harness
+# Harness
 
-This file is yours, and it arrives empty on purpose. The rules you hold the
-agent to are part of what gets marked, so they should be rules you decided on.
-
-Nothing about the starter is recorded here. What the repo ships is explained
-where it lives --- `fly.toml`, the `Dockerfile`, the CI workflow and
-`spec/README.md` each say what they fix --- and the
-[course website](https://comp.anu.edu.au/courses/comp4020-agentic-coding-studio/)
-publishes this deliverable's brief and spec. Read them before you plan or build;
-what the agent needs to carry from any of it is your call.
+- The brief for this week is docs/c7-brief.md; do exactly the step I name and stop.
+- The database enforces the rules; the page only reports them. Never query-then-insert.
+- Keep spec/invariants.test.ts, spec/readme.test.ts and /api/events working; CI probes them.
+- Run `pnpm typecheck` before saying a step is done; run `pnpm check` before step 3 is done.
+- Do not edit fly.toml, Dockerfile, .github/, PROCESS.md, reflections/ or README.md without my go-ahead.
+- Show README text in chat before writing it.
+- Never open, print or copy mise.local.toml; flyctl gets the token through mise.
