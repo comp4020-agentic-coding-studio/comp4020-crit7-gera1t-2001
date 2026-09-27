@@ -1,54 +1,40 @@
 # Process overview
 
-<!-- TEMPLATE: this file is a shape to fill in, not a form. Replace everything
-     in it with your own overview, and delete this comment — `pnpm
-     check:evidence` will remind you if it's still here. -->
-
-Written by you, for a reader: how you got from the brief to the harness and
-agentic workflow behind this submission. Markers read this file and follow its
-citations; they don't trawl the repo for evidence you didn't point at.
-
-This file is the shape; the course site's
-[assessment page](https://comp.anu.edu.au/courses/comp4020-agentic-coding-studio/topics/assessment/#what-you-submit)
-is the requirement, and its
-[word counts](https://comp.anu.edu.au/courses/comp4020-agentic-coding-studio/topics/assessment/#word-counts)
-cover every deliverable.
-
 ## What I built
 
-A sentence or two. `README.md` is where the account of what the app is and what
-good means here lives; this file is how you got there.
+A one-page stand-in for ANU Library study-room booking: pick a room, a date
+and a two-hour slot, and each slot can be booked once. It runs on the course's
+Astro + Drizzle/SQLite starter, deployed to Fly.io.
 
 ## How I got here
 
-The account of the process: how the work actually went, and how you knew the
-result was right. Tell it in whatever order makes it clear. A weekly prototype
-needs a paragraph or two; an assignment needs more.
+Before any code I wrote `CLAUDE.md` and a stepwise brief, `docs/c7-brief.md`,
+that makes the agent do one named step, report, and stop for my go-ahead
+([`1a9650a`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-gera1t-2001/commit/1a9650a)).
+It first paid off in Step 0: `flyctl` was missing, and the agent stopped and
+asked instead of installing it. I also deployed the untouched starter first, to
+prove the token and deploy path before any work depended on them.
 
-Cite the record as you go, as links whose text is the commit hash or range and
-whose target is this repo's commit or compare URL, so a reader clicks straight
-to the evidence:
+The rule the app exists for lives in a unique index on `(room, date, slot)`,
+not in page logic; I read the generated SQL myself to confirm it
+([`62fcf60`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-gera1t-2001/commit/62fcf60)).
+In the same step the agent claimed drizzle skips applied migrations by content
+hash. I asked it to show the source rather than assert it. It quoted
+`SQLiteSyncDialect.migrate`, which compares only timestamps, and corrected
+itself: the conclusion held, for a weaker reason.
 
-- one commit: [`a1b2c3d`](https://github.com/YOUR-ORG/YOUR-REPO/commit/a1b2c3d)
-- a range:
-  [`a1b2c3d...e4f5a6b`](https://github.com/YOUR-ORG/YOUR-REPO/compare/a1b2c3d...e4f5a6b)
+The route and page came next
+([`f66d7df`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-gera1t-2001/commit/f66d7df)),
+then spec tests
+([`b63cbac`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-gera1t-2001/commit/b63cbac)).
+They passed on the first run, so I had the agent break the rule on purpose:
+the collision test failed at the redirect-location assertion (expected
+`/?error=taken`, got `/`), the other 28 stayed green, and all 29 passed again
+after I reverted with `git checkout`. The README was drafted in chat and
+approved before it was written
+([`e1a77ca`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit7-gera1t-2001/commit/e1a77ca)).
 
-To pair a prompt with the commit it produced, quote the prompt (curated, not a
-full transcript) next to the citation:
-
-> the prompt, verbatim
-
-Screenshots are welcome where one carries the point better than a sentence does.
-Commit the file to this repo and link it with a **relative** path, which is what
-makes it render on GitHub: `![alt text](docs/before.png)`. Images don't count
-towards the word count and don't replace the citation.
-
-## Before you ship
-
-`pnpm check:evidence` verifies that this comment is gone, that your citations
-resolve to real commits, that a crit week's reflection entry is in
-`reflections/`, and that your `CLAUDE.md` is there. It checks that your account
-is traceable, not that it is good: that is the marker's call.
-
-Images aren't checked: unlike a citation whose SHA doesn't resolve, a broken
-image is visible the moment this file is rendered on GitHub.
+One surprise: after committing, the live site still showed the guestbook. While
+the repo is private, a commit is not a deploy; only `flyctl deploy` updates
+Fly. After redeploying I booked a slot in the browser, reloaded, and saw it
+still there, then booked the same slot again and saw it refused.
