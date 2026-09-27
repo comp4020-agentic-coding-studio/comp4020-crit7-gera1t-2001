@@ -4,7 +4,7 @@ import Database from "better-sqlite3";
 import { desc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/better-sqlite3";
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
-import { type Message, messages } from "./schema";
+import { type Booking, bookings } from "./schema";
 
 // One SQLite file is the app's whole persistent state. In production
 // fly.toml points DATABASE_PATH at the machine's volume (/data), which is
@@ -24,12 +24,24 @@ export const db = drizzle(client);
 // commit the migration it writes to drizzle/.
 migrate(db, { migrationsFolder: "./drizzle" });
 
-export type { Message };
+export type { Booking };
 
-export function listMessages(): Message[] {
-  return db.select().from(messages).orderBy(desc(messages.id)).limit(50).all();
+export function listBookings(): Booking[] {
+  return db.select().from(bookings).orderBy(desc(bookings.id)).limit(50).all();
 }
 
-export function addMessage(body: string): Message {
-  return db.insert(messages).values({ body }).returning().get();
+export function addBooking(input: {
+  room: string;
+  date: string;
+  slot: string;
+  name: string;
+}): Booking | null {
+  try {
+    return db.insert(bookings).values(input).returning().get();
+  } catch (err) {
+    if (err instanceof Database.SqliteError && err.code === "SQLITE_CONSTRAINT_UNIQUE") {
+      return null;
+    }
+    throw err;
+  }
 }
