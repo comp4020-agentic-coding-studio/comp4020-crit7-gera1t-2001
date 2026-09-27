@@ -1,18 +1,21 @@
-# Your prototype
+# ANU Room Booking
 
-<!-- TEMPLATE: this file is yours, and the deployed app publishes it in full at
-     /readme/ --- a visitor reads it before they touch the app, and so does the
-     marker. Replace everything in it, this comment included. -->
-
-What this is, in a paragraph: the thing, and what it's for.
+A prototype for ANU Library study-room booking — specifically the part that's
+annoying in the real system: you can't see which slots are taken until your
+booking gets refused. This replaces just that slice: pick a room, date and
+2-hour slot, give your name, and book it. The list of existing bookings is
+right there on the same page, live, in every open tab.
 
 ## What good looks like here
 
-Say what good means for this app: what you decided, what you read or looked at
-while deciding, and what you chose not to build. The rules that decision
-produced live in `CLAUDE.md` and the checks that protect it live in `spec/`;
-this is the argument they came from, so say which parts of good are enforced and
-which are judgement calls.
+The rule that matters: **a slot can be booked once.** A room/date/slot
+combination that's already taken is refused with "That slot is already
+booked," and nothing is written. That's enforced by a unique index in
+SQLite, not by checking-then-inserting in the page — the database is the
+one source of truth, so it can't race. `spec/bookings.test.ts` protects
+this directly: it books a slot, confirms a repeat is refused and doesn't
+duplicate the original, rejects an out-of-list slot, and confirms a new
+booking reaches other tabs over SSE.
 
-Images go in `public/` and are linked relatively --- `![alt](public/before.png)`
---- which renders on GitHub and at `/readme/` alike.
+Left out on purpose: logins, cancelling or editing a booking, real ANU
+data, new pages, and anything beyond the existing styling.
